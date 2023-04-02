@@ -1,0 +1,31 @@
+### GET users
+GET localhost:8080/api/users
+Accept: application/json
+
+### GET user by ID
+GET localhost:8080/api/users/2
+Accept: application/json
+
+### Create user
+POST localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "fullName": "rrrr",
+  "login": "rrrr",
+  "password": "rrr"
+}
+
+### Delete user by ID
+DELETE localhost:8080/api/users/3
+
+### Update user
+PATCH localhost:8080/api/users/1
+Content-Type: application/json
+
+{
+  "id":1,
+  "fullName": "cccrrr",
+  "login": "rrrr",
+  "password": "rrr"
+}
