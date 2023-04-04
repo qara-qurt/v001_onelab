@@ -26,18 +26,15 @@ func run() {
 
 	repo := repository.New()
 	service := service.New(repo)
-	handler := rest.New(service)
+	handler := rest.NewHandler(service)
 
-	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%s", config.PORT),
-		Handler: handler.InitRouter(),
-	}
+	srv := handler.InitRouter()
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
 	go func() {
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := srv.Start(fmt.Sprintf(":%s", config.PORT)); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen: %s\n", err)
 		}
 	}()

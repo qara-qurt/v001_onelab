@@ -1,0 +1,11 @@
+basePath: /api/
+host: localhost:8080
+info:
+  contact:
+    email: serikov.2002.12@gmail.com
+    name: Serikov DIas
+  description: This is a sample REST API.
+  title: v001_onelab
+  version: "1.0"
+paths: {}
+swagger: "2.0"

@@ -1,29 +1,38 @@
 package http
 
 import (
-	"github.com/julienschmidt/httprouter"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"v001_onelab/internal/service" //nolint:typecheck
+
+	_ "github.com/swaggo/echo-swagger/example/docs"
 )
 
 type Handler struct {
-	router      *httprouter.Router
+	router      *echo.Echo
 	UserService service.IUser
 }
 
-func New(service *service.Service) *Handler {
+func NewHandler(service *service.Service) *Handler {
 	return &Handler{
 		UserService: service.User,
 	}
 }
 
-func (h Handler) InitRouter() *httprouter.Router {
-	h.router = httprouter.New()
+func (h Handler) InitRouter() *echo.Echo {
+	h.router = echo.New()
 
-	h.router.GET("/api/users/", h.loggingMiddleware(h.GetUsers))
-	h.router.GET("/api/users/:id", h.loggingMiddleware(h.GetUser))
-	h.router.POST("/api/users/", h.loggingMiddleware(h.CreateUser))
-	h.router.PATCH("/api/users/:id", h.loggingMiddleware(h.UpdateUser))
-	h.router.DELETE("/api/users/:id", h.loggingMiddleware(h.DeleteUser))
+	h.router.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "method=${method}, uri=${uri}, status=${status}\n",
+	}))
+	api := h.router.Group("/api")
+	users := api.Group("/users")
+
+	users.GET("/", h.GetUsers)
+	users.GET("/:id", h.GetUser)
+	users.POST("/", h.CreateUser)
+	users.PATCH("/:id", h.UpdateUser)
+	users.DELETE("/:id", h.DeleteUser)
 
 	return h.router
 }
