@@ -1,0 +1,15 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample REST API.",
+        "title": "v001_onelab",
+        "contact": {
+            "name": "Serikov DIas",
+            "email": "serikov.2002.12@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/",
+    "paths": {}
+}
