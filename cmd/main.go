@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/labstack/echo/v4"
 	"log"
 	"net/http"
 	"os/signal"
@@ -30,16 +31,19 @@ func run() {
 
 	srv := handler.InitRouter()
 
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
-
 	go func() {
 		if err := srv.Start(fmt.Sprintf(":%s", config.PORT)); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen: %s\n", err)
 		}
 	}()
 
-	log.Printf("Server started on %s \n", config.PORT)
+	gracefulShutdown(srv)
+
+}
+
+func gracefulShutdown(srv *echo.Echo) {
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
 
 	<-ctx.Done()
 
