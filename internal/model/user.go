@@ -16,6 +16,6 @@ type UpdateUser struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
 }
-
+// молодец что добавил свои ошибки
 var ErrorNotFound = errors.New("user not found")
 var ErrorAlreadyExist = errors.New("user with this login already exist")
