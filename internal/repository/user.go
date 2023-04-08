@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 	"v001_onelab/internal/model"
 )
-
+// user нужно хранить в папке postgres | redis | etc 
 type IUserRepository interface {
 	Create(user model.User) error
 	GetByID(id int) (model.User, error)
