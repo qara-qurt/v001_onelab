@@ -13,6 +13,7 @@ import (
 	"v001_onelab/internal/repository"
 	"v001_onelab/internal/service"
 	rest "v001_onelab/internal/transport/http"
+	"v001_onelab/pkg/database/postgres"
 )
 
 func main() {
@@ -25,7 +26,12 @@ func run() {
 		log.Fatal("cannot read config files")
 	}
 
-	repo := repository.New()
+	db, err := postgres.NewDatabasePSQL(config)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	repo := repository.New(db)
 	service := service.New(repo)
 	handler := rest.NewHandler(service)
 

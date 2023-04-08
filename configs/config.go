@@ -6,7 +6,9 @@ import (
 )
 
 type Config struct {
-	PORT string
+	PORT     string
+	Database string
+	PgURL    string
 }
 
 func New() (*Config, error) {
@@ -15,8 +17,22 @@ func New() (*Config, error) {
 		return nil, err
 	}
 
-	port := os.Getenv("PORT")
+	//next project I will use "github.com/caarlos0/env/v6" to make code shorter
+	port, ok := os.LookupEnv("PORT")
+	if !ok {
+		port = "8080"
+	}
+	pgURl, ok := os.LookupEnv("PgURL")
+	if !ok {
+		pgURl = "host=localhost port=5436 user=postgres password=secret dbname=postgres sslmode=disable"
+	}
+	database, ok := os.LookupEnv("Database")
+	if !ok {
+		database = "postgres"
+	}
 	return &Config{
-		PORT: port,
+		PORT:     port,
+		PgURL:    pgURl,
+		Database: database,
 	}, nil
 }

@@ -7,25 +7,34 @@ GET localhost:8080/api/users/2
 Accept: application/json
 
 ### Create user
-POST localhost:8080/api/users/
+POST localhost:8080/api/register
 Content-Type: application/json
 
 {
-  "fullName": "rrrr",
-  "login": "rrrr",
-  "password": "rrr"
+  "fullName": "Serikov Dias",
+  "login": "qara-qurt12",
+  "password": "qwerty"
 }
 
 ### Delete user by ID
-DELETE localhost:8080/api/users/3
+DELETE localhost:8080/api/users/2
 
 ### Update user
-PATCH localhost:8080/api/users/1
+PATCH localhost:8080/api/users/3
 Content-Type: application/json
 
 {
-  "id":1,
-  "fullName": "cccrrr",
-  "login": "rrrr",
-  "password": "rrr"
+  "fullName": "tima",
+  "login": "qara-qurt",
+  "password": "dias"
+}
+
+### Change password
+PATCH localhost:8080/api/users/change-password
+Content-Type: application/json
+
+{
+  "login": "qara-qurt12",
+  "currentPassword": "dias",
+  "newPassword": "diass"
 }
