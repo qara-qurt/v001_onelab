@@ -26,11 +26,12 @@ func (h Handler) InitRouter() *echo.Echo {
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
 	}))
 	api := h.router.Group("/api")
-	users := api.Group("/users")
+	api.POST("/register", h.CreateUser)
 
+	users := api.Group("/users")
 	users.GET("/", h.GetUsers)
 	users.GET("/:id", h.GetUser)
-	users.POST("/", h.CreateUser)
+	users.PATCH("/change-password", h.ChangePassword)
 	users.PATCH("/:id", h.UpdateUser)
 	users.DELETE("/:id", h.DeleteUser)
 

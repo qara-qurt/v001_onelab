@@ -1,11 +1,17 @@
-FROM golang:alpine
+FROM golang:latest AS builder
 
 WORKDIR /app
-COPY . .
-
+COPY go.mod .
+COPY go.sum .
 RUN go mod download
-RUN go build -o app ./cmd/main.go
+COPY . .
+RUN GO111MODULE="on" CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app ./cmd
 
-EXPOSE 8080
-
+FROM alpine:latest
+WORKDIR /app
+COPY --from=builder /app/app .
+COPY --from=builder /app/configs /app/configs
+COPY --from=builder /usr/local/go/lib/time/zoneinfo.zip /
+ENV TZ=Asia/Almaty
+ENV ZONEINFO=/zoneinfo.zip
 CMD ["./app"]

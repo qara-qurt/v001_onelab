@@ -34,6 +34,11 @@ func (h *Handler) GetUser(c echo.Context) error {
 	res, err := h.UserService.GetByID(id)
 	if err != nil {
 		c.Logger().Error(err)
+		if err == model.ErrorNotFound {
+			return c.JSON(http.StatusBadRequest, map[string]interface{}{
+				"error": err.Error(),
+			})
+		}
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
 		})
@@ -94,7 +99,7 @@ func (h Handler) UpdateUser(c echo.Context) error {
 		})
 	}
 
-	var user model.User
+	var user model.UserResponse
 	if err := c.Bind(&user); err != nil {
 		c.Logger().Error(err)
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
@@ -103,7 +108,7 @@ func (h Handler) UpdateUser(c echo.Context) error {
 	}
 
 	user.ID = uint(id)
-	res, err := h.UserService.Update(user)
+	err = h.UserService.Update(user)
 	if err != nil {
 		c.Logger().Error(err)
 		return c.JSON(http.StatusNotFound, map[string]interface{}{
@@ -111,5 +116,27 @@ func (h Handler) UpdateUser(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": "user updated",
+	})
+}
+
+func (h Handler) ChangePassword(c echo.Context) error {
+	var user model.ChangePassword
+	if err := c.Bind(&user); err != nil {
+		c.Logger().Error(err)
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	if err := h.UserService.ChangePassword(user); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": "password changed",
+	})
 }

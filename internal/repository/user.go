@@ -1,79 +1,111 @@
 package repository
 
 import (
-	"errors"
-	"fmt"
-	"github.com/google/uuid"
+	"database/sql"
+	"github.com/jmoiron/sqlx"
 	"v001_onelab/internal/model"
 )
 
 type IUserRepository interface {
 	Create(user model.User) error
-	GetByID(id int) (model.User, error)
-	GetAll() ([]model.User, error)
+	GetByID(id int) (model.UserResponse, error)
+	GetByLogin(login string) (model.User, error)
+	GetAll() ([]model.UserResponse, error)
 	Delete(id int) error
-	Update(user model.User) (model.User, error)
+	Update(user model.UserResponse) error
+	ChangePassword(user model.ChangePassword) error
 }
 
 type User struct {
-	db []model.User
+	db *sqlx.DB
 }
 
-func NewUser() *User {
+func NewUser(db *sqlx.DB) *User {
 	return &User{
-		db: []model.User{
-			{ID: 1, FullName: "Serikov Dias", Login: "dias002", Password: "qwerty"},
-			{ID: 2, FullName: "test2 Dias", Login: "dias003", Password: "qwerty3"},
-			{ID: 3, FullName: "test3 Dias", Login: "dias004", Password: "qwerty4"},
-			{ID: 4, FullName: "test4 Dias", Login: "dias005", Password: "qwerty5"},
-		},
+		db: db,
 	}
 }
 
 func (u *User) Create(user model.User) error {
-	if user.FullName == "" {
-		return errors.New("user FullName cannot be empty")
+	query, err := u.db.Preparex("INSERT INTO users(fullName,login, password) VALUES ($1, $2, $3)")
+	if err != nil {
+		return err
 	}
-	if user.Login == "" {
-		return errors.New("user Login cannot be empty")
+	defer query.Close()
+
+	if _, err := query.Exec(user.FullName, user.Login, user.Password); err != nil {
+		return err
 	}
-	if user.Password == "" {
-		return errors.New("user Password cannot be empty")
-	}
-	user.ID = uint(uuid.New().ID())
-	u.db = append(u.db, user)
 	return nil
 }
 
-func (u User) GetByID(id int) (model.User, error) {
-	for _, user := range u.db {
-		if user.ID == uint(id) {
-			return user, nil
-		}
+func (u User) GetByID(id int) (model.UserResponse, error) {
+	query, err := u.db.Preparex("SELECT id,fullName,login FROM users WHERE id = $1")
+	if err != nil {
+		return model.UserResponse{}, err
 	}
-	return model.User{}, model.ErrorNotFound
+	defer query.Close()
+
+	var user model.UserResponse
+	err = query.Get(&user, id)
+	//check user is found
+	if err == sql.ErrNoRows {
+		return model.UserResponse{}, model.ErrorNotFound
+	} else if err != nil {
+		return model.UserResponse{}, err
+	}
+	return user, nil
 }
 
-func (u User) GetAll() ([]model.User, error) {
-	return u.db, nil
+func (u User) GetByLogin(login string) (model.User, error) {
+	query, err := u.db.Preparex("SELECT id,fullName,login,password FROM users WHERE login = $1")
+	if err != nil {
+		return model.User{}, err
+	}
+	defer query.Close()
+
+	var user model.User
+	err = query.Get(&user, login)
+	//check user is found
+	if err == sql.ErrNoRows {
+		return model.User{}, model.ErrorNotFound
+	} else if err != nil {
+		return model.User{}, err
+	}
+	return user, nil
+}
+
+func (u User) GetAll() ([]model.UserResponse, error) {
+	var users []model.UserResponse
+	if err := u.db.Select(&users, "SELECT id,fullName,login FROM users"); err != nil {
+		return []model.UserResponse{}, err
+	}
+	return users, nil
 }
 
 func (u *User) Delete(id int) error {
-	for i, user := range u.db {
-		if user.ID == uint(id) {
-			u.db = append(u.db[:i], u.db[i+1:]...)
-			return nil
-		}
+	query, err := u.db.Preparex("DELETE FROM users WHERE id = $1")
+	if err != nil {
+		return err
 	}
-	return model.ErrorNotFound
+	if _, err := query.Exec(id); err != nil {
+		return err
+	}
+	return nil
 }
 
-func (u User) Update(user model.User) (model.User, error) {
-	for i, us := range u.db {
-		if us.ID == user.ID {
-			u.db[i] = user
-			return u.db[i], nil
-		}
+func (u User) Update(user model.UserResponse) error {
+	_, err := u.db.Exec("UPDATE users SET fullname = $1, login = $2 WHERE id = $3", user.FullName, user.Login, user.ID)
+	if err != nil {
+		return err
 	}
-	return model.User{}, fmt.Errorf("user with ID %d not found", user.ID)
+	return nil
+}
+
+func (u User) ChangePassword(user model.ChangePassword) error {
+	_, err := u.db.Exec("UPDATE users SET password = $1 WHERE login = $2", user.NewPassword, user.Login)
+	if err != nil {
+		return err
+	}
+	return nil
 }
