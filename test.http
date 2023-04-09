@@ -1,27 +1,43 @@
 ### GET users
 GET localhost:8080/api/users/
 Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODEwNDQ0NTksImlhdCI6MTY4MTAzNzI1OSwic3ViIjoiMTUifQ.wfv8QUCq5Cqf1IRqmTDQOKccEFQYLCDEcCOaQv5VH-I
 
 ### GET user by ID
 GET localhost:8080/api/users/2
 Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODEwNDQ0NTksImlhdCI6MTY4MTAzNzI1OSwic3ViIjoiMTUifQ.wfv8QUCq5Cqf1IRqmTDQOKccEFQYLCDEcCOaQv5VH-I
 
-### Create user
-POST localhost:8080/api/register
+
+### SignUp
+POST localhost:8080/api/auth/sign-up
 Content-Type: application/json
 
 {
   "fullName": "Serikov Dias",
-  "login": "qara-qurt12",
-  "password": "qwerty"
+  "login": "tima0712",
+  "password": "123456"
+}
+
+
+### SignIn
+POST localhost:8080/api/auth/sign-in
+Content-Type: application/json
+
+{
+  "login": "tima0712",
+  "password": "123456"
 }
 
 ### Delete user by ID
 DELETE localhost:8080/api/users/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODEwNDQ0NTksImlhdCI6MTY4MTAzNzI1OSwic3ViIjoiMTUifQ.wfv8QUCq5Cqf1IRqmTDQOKccEFQYLCDEcCOaQv5VH-I
 
 ### Update user
 PATCH localhost:8080/api/users/3
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODEwNDQ0NTksImlhdCI6MTY4MTAzNzI1OSwic3ViIjoiMTUifQ.wfv8QUCq5Cqf1IRqmTDQOKccEFQYLCDEcCOaQv5VH-I
+
 
 {
   "fullName": "tima",
@@ -32,6 +48,8 @@ Content-Type: application/json
 ### Change password
 PATCH localhost:8080/api/users/change-password
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODEwNDQ0NTksImlhdCI6MTY4MTAzNzI1OSwic3ViIjoiMTUifQ.wfv8QUCq5Cqf1IRqmTDQOKccEFQYLCDEcCOaQv5VH-I
+
 
 {
   "login": "qara-qurt12",

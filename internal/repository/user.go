@@ -3,11 +3,12 @@ package repository
 import (
 	"database/sql"
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 	"v001_onelab/internal/model"
 )
 
 type IUserRepository interface {
-	Create(user model.User) error
+	Create(user model.UserInput) error
 	GetByID(id int) (model.UserResponse, error)
 	GetByLogin(login string) (model.User, error)
 	GetAll() ([]model.UserResponse, error)
@@ -26,7 +27,7 @@ func NewUser(db *sqlx.DB) *User {
 	}
 }
 
-func (u *User) Create(user model.User) error {
+func (u *User) Create(user model.UserInput) error {
 	query, err := u.db.Preparex("INSERT INTO users(fullName,login, password) VALUES ($1, $2, $3)")
 	if err != nil {
 		return err
@@ -34,6 +35,9 @@ func (u *User) Create(user model.User) error {
 	defer query.Close()
 
 	if _, err := query.Exec(user.FullName, user.Login, user.Password); err != nil {
+		if err.(*pq.Error).Constraint == "users_login_key" {
+			return model.ErrorAlreadyExist
+		}
 		return err
 	}
 	return nil

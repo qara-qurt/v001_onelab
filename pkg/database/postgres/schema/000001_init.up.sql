@@ -1,7 +1,7 @@
 CREATE TABLE users (
     id Serial PRIMARY KEY not null unique,
     fullName varchar(255) not null,
-    login varchar(255) not null,
+    login varchar(255) not null unique,
     password varchar(255) not null
 );
 

@@ -32,8 +32,8 @@ func run() {
 	}
 
 	repo := repository.New(db)
-	service := service.New(repo)
-	handler := rest.NewHandler(service)
+	service := service.New(repo, config)
+	handler := rest.New(service)
 
 	srv := handler.InitRouter()
 

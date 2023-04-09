@@ -1,14 +1,21 @@
 package service
 
 import (
+	"context"
 	"errors"
+	"fmt"
+	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
+	"strconv"
+	"time"
 	"v001_onelab/internal/model"
 	"v001_onelab/internal/repository"
 )
 
 type IUser interface {
-	Create(user model.User) error
+	Create(user model.UserInput) error
+	SignIn(user model.SignInInput) (string, error)
+	ParseToken(ctx context.Context, token string) (uint, error)
 	GetByID(id int) (model.UserResponse, error)
 	GetByLogin(login string) (model.User, error)
 	GetAll() ([]model.UserResponse, error)
@@ -18,22 +25,74 @@ type IUser interface {
 }
 
 type User struct {
-	repo repository.IUserRepository
+	repo       repository.IUserRepository
+	hmacSecret []byte
 }
 
-func NewUser(repo repository.IUserRepository) *User {
+func NewUser(repo repository.IUserRepository, secret string) *User {
 	return &User{
-		repo: repo,
+		repo:       repo,
+		hmacSecret: []byte(secret),
 	}
 }
 
-func (u User) Create(user model.User) error {
+func (u User) Create(user model.UserInput) error {
 	hashPass, err := hashPassword(user.Password)
 	if err != nil {
 		return err
 	}
 	user.Password = hashPass
 	return u.repo.Create(user)
+}
+
+func (u User) SignIn(user model.SignInInput) (string, error) {
+	var res model.User
+	res, err := u.repo.GetByLogin(user.Login)
+	if err != nil {
+		return "", err
+	}
+
+	if ok := checkPasswordHash(user.Password, res.Password); !ok {
+		return "", model.ErrorPassword
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+		Subject:   strconv.Itoa(int(res.ID)),
+		IssuedAt:  time.Now().Unix(),
+		ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
+	})
+
+	return token.SignedString(u.hmacSecret)
+}
+
+func (u User) ParseToken(ctx context.Context, token string) (uint, error) {
+	t, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpecting signing method: %v", token.Header["alg"])
+		}
+
+		return u.hmacSecret, nil
+	})
+	if err != nil {
+		return 0, err
+	}
+
+	claims, ok := t.Claims.(jwt.MapClaims)
+	if !ok {
+		return 0, errors.New("invalid claims")
+	}
+
+	subject, ok := claims["sub"].(string)
+	if !ok {
+		return 0, errors.New("invalid subject")
+	}
+
+	id, err := strconv.Atoi(subject)
+	if err != nil {
+		return 0, errors.New("invalid subject")
+	}
+
+	return uint(id), nil
+
 }
 
 func (u User) GetByID(id int) (model.UserResponse, error) {
@@ -63,7 +122,7 @@ func (u User) ChangePassword(user model.ChangePassword) error {
 	}
 	ok := checkPasswordHash(user.CurrentPassword, res.Password)
 	if !ok {
-		return errors.New("password is not correct")
+		return model.ErrorPassword
 	}
 	hashPass, err := hashPassword(user.NewPassword)
 	if err != nil {

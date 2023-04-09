@@ -6,9 +6,10 @@ import (
 )
 
 type Config struct {
-	PORT     string
-	Database string
-	PgURL    string
+	PORT       string
+	Database   string
+	PgURL      string
+	HMACSecret string
 }
 
 func New() (*Config, error) {
@@ -30,9 +31,14 @@ func New() (*Config, error) {
 	if !ok {
 		database = "postgres"
 	}
+	hmacSecret, ok := os.LookupEnv("HMACSecret")
+	if !ok {
+		hmacSecret = ""
+	}
 	return &Config{
-		PORT:     port,
-		PgURL:    pgURl,
-		Database: database,
+		PORT:       port,
+		PgURL:      pgURl,
+		Database:   database,
+		HMACSecret: hmacSecret,
 	}, nil
 }
