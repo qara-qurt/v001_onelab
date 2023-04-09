@@ -37,7 +37,7 @@ func (h Handler) InitRouter() *echo.Echo {
 
 	users := api.Group("/users")
 	{
-		//users.Use(h.authMiddleware)
+		users.Use(h.authMiddleware)
 		users.GET("/", h.GetUsers)
 		users.GET("/:id", h.GetUser)
 		users.PATCH("/change-password", h.ChangePassword)
