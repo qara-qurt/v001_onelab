@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 
-### SignIn
+### SignIn GET JWT Token
 POST localhost:8080/api/auth/sign-in
 Content-Type: application/json
 

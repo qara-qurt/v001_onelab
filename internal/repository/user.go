@@ -15,6 +15,7 @@ type IUserRepository interface {
 	Delete(id int) error
 	Update(user model.UserResponse) error
 	ChangePassword(user model.ChangePassword) error
+	GetOrderUserBooks() ([]model.UserOrderBooks, error)
 }
 
 type User struct {
@@ -112,4 +113,28 @@ func (u User) ChangePassword(user model.ChangePassword) error {
 		return err
 	}
 	return nil
+}
+
+func (u User) GetOrderUserBooks() ([]model.UserOrderBooks, error) {
+	var userBooks []model.UserOrderBooks
+	query := `
+		SELECT
+			obh.user_id AS id,
+			u.fullname,
+			u.login,
+			b.id AS "book.id",
+			b.name AS "book.name",
+			b.description AS "book.description",
+			b.author AS "book.author",
+			obh.order_date AS "book.order_date",
+			obh.return_date AS "book.return_date"
+		FROM
+			order_book_history obh
+			JOIN users u ON u.id = obh.user_id
+			JOIN books b ON b.id = obh.book_id
+	`
+	if err := u.db.Select(&userBooks, query); err != nil {
+		return []model.UserOrderBooks{}, err
+	}
+	return userBooks, nil
 }

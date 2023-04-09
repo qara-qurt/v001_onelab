@@ -1,0 +1,21 @@
+### Create book
+POST localhost:8080/api/books/
+Content-Type: application/json
+
+{
+  "name": "test23",
+  "description": "tima0712",
+  "author": "123456"
+}
+
+### Get books
+GET localhost:8080/api/books/
+Content-Type: application/json
+
+### Get books
+GET localhost:8080/api/books/order-book
+Content-Type: application/json
+
+### Get Users books
+GET localhost:8080/api/users/order-book
+Content-Type: application/json

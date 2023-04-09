@@ -13,7 +13,7 @@ func init() {
 
 type User struct {
 	ID       uint   `json:"id"`
-	FullName string `json:"fullName"`
+	FullName string `json:"fullname"`
 	Login    string `json:"login"`
 	Password string `json:"password"`
 }
