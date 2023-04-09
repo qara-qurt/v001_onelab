@@ -13,27 +13,34 @@ type Handler struct {
 	UserService service.IUser
 }
 
-func NewHandler(service *service.Service) *Handler {
+func New(service *service.Service) *Handler {
 	return &Handler{
+		router:      echo.New(),
 		UserService: service.User,
 	}
 }
 
 func (h Handler) InitRouter() *echo.Echo {
-	h.router = echo.New()
-
 	h.router.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
 	}))
+
 	api := h.router.Group("/api")
-	api.POST("/register", h.CreateUser)
+
+	auth := api.Group("/auth")
+	{
+		auth.POST("/sign-up", h.SignUp)
+		auth.POST("/sign-in", h.SignIn)
+	}
 
 	users := api.Group("/users")
-	users.GET("/", h.GetUsers)
-	users.GET("/:id", h.GetUser)
-	users.PATCH("/change-password", h.ChangePassword)
-	users.PATCH("/:id", h.UpdateUser)
-	users.DELETE("/:id", h.DeleteUser)
-
+	{
+		users.Use(h.authMiddleware)
+		users.GET("/", h.GetUsers)
+		users.GET("/:id", h.GetUser)
+		users.PATCH("/change-password", h.ChangePassword)
+		users.PATCH("/:id", h.UpdateUser)
+		users.DELETE("/:id", h.DeleteUser)
+	}
 	return h.router
 }
