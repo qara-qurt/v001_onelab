@@ -11,12 +11,14 @@ import (
 type Handler struct {
 	router      *echo.Echo
 	UserService service.IUser
+	BookService service.IBook
 }
 
 func New(service *service.Service) *Handler {
 	return &Handler{
 		router:      echo.New(),
 		UserService: service.User,
+		BookService: service.Book,
 	}
 }
 
@@ -35,12 +37,22 @@ func (h Handler) InitRouter() *echo.Echo {
 
 	users := api.Group("/users")
 	{
-		users.Use(h.authMiddleware)
+		//users.Use(h.authMiddleware)
 		users.GET("/", h.GetUsers)
 		users.GET("/:id", h.GetUser)
 		users.PATCH("/change-password", h.ChangePassword)
 		users.PATCH("/:id", h.UpdateUser)
 		users.DELETE("/:id", h.DeleteUser)
+		//Какие книги у пользователя сейчас
+		users.GET("/order-book", h.GetOrderUserBooks)
+	}
+
+	books := api.Group("/books")
+	{
+		books.POST("/", h.CreateBook)
+		books.GET("/", h.GetBooks)
+		//Общая истроия выдача книг
+		books.GET("/order-book", h.GetOrderBooks)
 	}
 	return h.router
 }
