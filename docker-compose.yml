@@ -1,0 +1,38 @@
+version: '3.9'
+
+networks:
+  internal:
+    external: false
+
+volumes:
+  pgdata:
+
+services:
+  app:
+    build: ./
+    command: ./app
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+    environment:
+      - TZ=Asia/Almaty
+      - PORT=${PORT}
+      - PgURL=${PgURL}
+      - Database=${Database}
+      - HMACSecret=${HMACSecret}
+    networks:
+       - internal
+
+  postgres:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - /pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+    ports:
+      - 5432:5432
+    networks:
+      - internal
+

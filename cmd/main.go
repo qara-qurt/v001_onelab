@@ -23,7 +23,7 @@ func main() {
 func run() {
 	config, err := configs.New()
 	if err != nil {
-		log.Fatal("cannot read config files")
+		log.Fatal(err.Error())
 	}
 
 	db, err := postgres.NewDatabasePSQL(config)
