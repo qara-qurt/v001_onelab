@@ -14,8 +14,23 @@ import (
 	"v001_onelab/internal/service"
 	rest "v001_onelab/internal/transport/http"
 	"v001_onelab/pkg/database/postgres"
+
+	_ "v001_onelab/docs"
 )
 
+// @title Library
+// @version 1.0
+// @description REST API Library
+
+// @contact.name Serikov Dias
+// @contact.email serikov.2002.12@gmail.com
+
+// @host localhost:8080
+// @BasePath /api
+
+// @securityDefinitions.apiKey  ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	run()
 }

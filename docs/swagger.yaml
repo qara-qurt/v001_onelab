@@ -1,11 +1,497 @@
-basePath: /api/
+basePath: /api
+definitions:
+  sql.NullTime:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  v001_onelab_internal_model.Book:
+    properties:
+      author:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  v001_onelab_internal_model.BookInput:
+    properties:
+      author:
+        minLength: 2
+        type: string
+      description:
+        minLength: 6
+        type: string
+      name:
+        minLength: 2
+        type: string
+    required:
+    - author
+    - description
+    - name
+    type: object
+  v001_onelab_internal_model.BookWithDate:
+    properties:
+      author:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      order_date:
+        type: string
+      return_date:
+        $ref: '#/definitions/sql.NullTime'
+    type: object
+  v001_onelab_internal_model.ChangePassword:
+    properties:
+      currentPassword:
+        minLength: 6
+        type: string
+      login:
+        minLength: 4
+        type: string
+      newPassword:
+        minLength: 6
+        type: string
+    required:
+    - currentPassword
+    - login
+    - newPassword
+    type: object
+  v001_onelab_internal_model.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  v001_onelab_internal_model.OrderBook:
+    properties:
+      book:
+        $ref: '#/definitions/v001_onelab_internal_model.Book'
+      book_id:
+        type: integer
+      id:
+        type: integer
+      order_date:
+        type: string
+      return_date:
+        $ref: '#/definitions/sql.NullTime'
+      user:
+        $ref: '#/definitions/v001_onelab_internal_model.User'
+      user_id:
+        type: integer
+    type: object
+  v001_onelab_internal_model.SignInInput:
+    properties:
+      login:
+        minLength: 4
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - login
+    - password
+    type: object
+  v001_onelab_internal_model.Token:
+    properties:
+      token:
+        type: string
+    type: object
+  v001_onelab_internal_model.User:
+    properties:
+      fullname:
+        type: string
+      id:
+        type: integer
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  v001_onelab_internal_model.UserInput:
+    properties:
+      fullName:
+        minLength: 2
+        type: string
+      login:
+        minLength: 4
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - fullName
+    - login
+    - password
+    type: object
+  v001_onelab_internal_model.UserOrderBooksResponse:
+    properties:
+      book:
+        items:
+          $ref: '#/definitions/v001_onelab_internal_model.BookWithDate'
+        type: array
+      full_name:
+        type: string
+      id:
+        type: integer
+      login:
+        type: string
+    type: object
+  v001_onelab_internal_model.UserResponse:
+    properties:
+      fullName:
+        minLength: 2
+        type: string
+      id:
+        type: integer
+      login:
+        minLength: 4
+        type: string
+    required:
+    - fullName
+    - login
+    type: object
 host: localhost:8080
 info:
   contact:
     email: serikov.2002.12@gmail.com
-    name: Serikov DIas
-  description: This is a sample REST API.
-  title: v001_onelab
+    name: Serikov Dias
+  description: REST API Library
+  title: Library
   version: "1.0"
-paths: {}
+paths:
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: SignIn
+      operationId: sign-in
+      parameters:
+      - description: User info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/v001_onelab_internal_model.SignInInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.Token'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+      tags:
+      - auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: register
+      operationId: sign-up
+      parameters:
+      - description: User info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/v001_onelab_internal_model.UserInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+      tags:
+      - auth
+  /books/:
+    get:
+      consumes:
+      - application/json
+      description: get all books
+      operationId: get-books
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/v001_onelab_internal_model.Book'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - books
+    post:
+      consumes:
+      - application/json
+      description: create book
+      operationId: create-book
+      parameters:
+      - description: Book info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/v001_onelab_internal_model.BookInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - books
+  /books/order-book:
+    get:
+      consumes:
+      - application/json
+      description: get order history books
+      operationId: get_order-books
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/v001_onelab_internal_model.OrderBook'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - books
+  /users/:
+    get:
+      consumes:
+      - application/json
+      description: get all users
+      operationId: get-users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.UserResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete user
+      operationId: delete-user
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: get user by ID
+      operationId: get-user
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - users
+    patch:
+      consumes:
+      - application/json
+      description: update user
+      operationId: update-user
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - users
+  /users/books/current:
+    get:
+      consumes:
+      - application/json
+      description: get user books current
+      operationId: get-user-books
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.UserOrderBooksResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - user-books
+  /users/books/last-mounth:
+    get:
+      consumes:
+      - application/json
+      description: get user books current
+      operationId: get-user-books-mounth
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.UserOrderBooksResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - user-books
+  /users/change-password/:
+    patch:
+      consumes:
+      - application/json
+      description: update user
+      operationId: change-password
+      parameters:
+      - description: info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/v001_onelab_internal_model.ChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - users
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

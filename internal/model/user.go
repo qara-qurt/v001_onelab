@@ -63,6 +63,18 @@ func (c ChangePassword) Validate() error {
 	return validate.Struct(c)
 }
 
+type ErrorResponse struct {
+	Error string `json:"error"`
+}
+
+type Token struct {
+	Token string `json:"token"`
+}
+
+func NewErrorResponse(err string) ErrorResponse {
+	return ErrorResponse{Error: err}
+}
+
 var ErrorNotFound = errors.New("user not found")
 var ErrorAlreadyExist = errors.New("user with this login already exist")
 var ErrorPassword = errors.New("password is not correct")

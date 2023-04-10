@@ -3,9 +3,10 @@ package http
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	"v001_onelab/internal/service" //nolint:typecheck
 
-	_ "github.com/swaggo/echo-swagger/example/docs"
+	_ "v001_onelab/docs"
 )
 
 type Handler struct {
@@ -29,6 +30,7 @@ func (h Handler) InitRouter() *echo.Echo {
 
 	api := h.router.Group("/api")
 
+	api.GET("/swagger/*", echoSwagger.WrapHandler)
 	auth := api.Group("/auth")
 	{
 		auth.POST("/sign-up", h.SignUp)

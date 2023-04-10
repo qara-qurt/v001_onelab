@@ -36,3 +36,11 @@ services:
     networks:
       - internal
 
+  redis:
+    image: redis:alpine
+    networks:
+      - internal
+    ports:
+      - "6379:6379"
+
+
