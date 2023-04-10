@@ -43,12 +43,17 @@ func (h Handler) InitRouter() *echo.Echo {
 		users.PATCH("/change-password", h.ChangePassword)
 		users.PATCH("/:id", h.UpdateUser)
 		users.DELETE("/:id", h.DeleteUser)
-		//Какие книги у пользователя сейчас
-		users.GET("/order-book", h.GetOrderUserBooks)
+
+		userBooks := users.Group("/books")
+		{
+			userBooks.GET("/current", h.GetOrderUserBooks)
+			userBooks.GET("/last-mounth", h.GetOrderUserBooksLastMounth)
+		}
 	}
 
 	books := api.Group("/books")
 	{
+		books.Use(h.authMiddleware)
 		books.POST("/", h.CreateBook)
 		books.GET("/", h.GetBooks)
 		//Общая истроия выдача книг

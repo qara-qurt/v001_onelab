@@ -15,7 +15,7 @@ type IUserRepository interface {
 	Delete(id int) error
 	Update(user model.UserResponse) error
 	ChangePassword(user model.ChangePassword) error
-	GetOrderUserBooks() ([]model.UserOrderBooks, error)
+	GetOrderUserBooks(isLastMounth bool) ([]model.UserOrderBooks, error)
 }
 
 type User struct {
@@ -82,18 +82,18 @@ func (u User) GetByLogin(login string) (model.User, error) {
 
 func (u User) GetAll() ([]model.UserResponse, error) {
 	var users []model.UserResponse
-	if err := u.db.Select(&users, "SELECT id,fullName,login FROM users"); err != nil {
+	if err := u.db.Select(&users, "SELECT id,fullName,login FROM users WHERE isdeleted = false"); err != nil {
 		return []model.UserResponse{}, err
 	}
 	return users, nil
 }
 
 func (u *User) Delete(id int) error {
-	query, err := u.db.Preparex("DELETE FROM users WHERE id = $1")
+	query, err := u.db.Preparex("UPDATE users SET isdeleted = $1 WHERE id = $2")
 	if err != nil {
 		return err
 	}
-	if _, err := query.Exec(id); err != nil {
+	if _, err := query.Exec(true, id); err != nil {
 		return err
 	}
 	return nil
@@ -115,7 +115,7 @@ func (u User) ChangePassword(user model.ChangePassword) error {
 	return nil
 }
 
-func (u User) GetOrderUserBooks() ([]model.UserOrderBooks, error) {
+func (u User) GetOrderUserBooks(isLastMounth bool) ([]model.UserOrderBooks, error) {
 	var userBooks []model.UserOrderBooks
 	query := `
 		SELECT
@@ -133,6 +133,9 @@ func (u User) GetOrderUserBooks() ([]model.UserOrderBooks, error) {
 			JOIN users u ON u.id = obh.user_id
 			JOIN books b ON b.id = obh.book_id
 	`
+	if isLastMounth {
+		query += `WHERE obh.order_date >= DATE_TRUNC('month', NOW())`
+	}
 	if err := u.db.Select(&userBooks, query); err != nil {
 		return []model.UserOrderBooks{}, err
 	}

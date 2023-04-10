@@ -208,3 +208,14 @@ func (h Handler) GetOrderUserBooks(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, userBooks)
 }
+
+func (h Handler) GetOrderUserBooksLastMounth(c echo.Context) error {
+	userBooks, err := h.UserService.GetOrderUserBooksLastMounth()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, userBooks)
+}

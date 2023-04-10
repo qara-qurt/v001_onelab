@@ -23,6 +23,7 @@ type IUser interface {
 	Update(user model.UserResponse) error
 	ChangePassword(user model.ChangePassword) error
 	GetOrderUserBooks() ([]model.UserOrderBooksResponse, error)
+	GetOrderUserBooksLastMounth() ([]model.UserOrderBooksResponse, error)
 }
 
 type User struct {
@@ -134,12 +135,22 @@ func (u User) ChangePassword(user model.ChangePassword) error {
 }
 
 func (u User) GetOrderUserBooks() ([]model.UserOrderBooksResponse, error) {
-	userBooks, err := u.repo.GetOrderUserBooks()
+	userBooks, err := u.repo.GetOrderUserBooks(false)
 	if err != nil {
 		return []model.UserOrderBooksResponse{}, err
 	}
 
-	res := combineBooks(userBooks)
+	res := combineBooks(userBooks, false)
+	return res, nil
+}
+
+func (u User) GetOrderUserBooksLastMounth() ([]model.UserOrderBooksResponse, error) {
+	userBooks, err := u.repo.GetOrderUserBooks(true)
+	if err != nil {
+		return []model.UserOrderBooksResponse{}, err
+	}
+
+	res := combineBooks(userBooks, true)
 	return res, nil
 }
 
@@ -156,7 +167,8 @@ func checkPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-func combineBooks(userBooks []model.UserOrderBooks) []model.UserOrderBooksResponse {
+// withReturned(bool) - с возвращенными книгами
+func combineBooks(userBooks []model.UserOrderBooks, withReturned bool) []model.UserOrderBooksResponse {
 	data := make(map[uint]*model.UserOrderBooksResponse)
 	for _, ub := range userBooks {
 		if _, ok := data[ub.ID]; !ok {
@@ -175,7 +187,12 @@ func combineBooks(userBooks []model.UserOrderBooks) []model.UserOrderBooksRespon
 			OrderDate:   ub.Book.OrderDate,
 			ReturnDate:  ub.Book.ReturnDate,
 		}
-		data[ub.ID].AddBook(book)
+
+		if withReturned {
+			data[ub.ID].AddBook(book)
+		} else if !ub.Book.ReturnDate.Valid {
+			data[ub.ID].AddBook(book)
+		}
 	}
 
 	result := make([]model.UserOrderBooksResponse, 0, len(data))
