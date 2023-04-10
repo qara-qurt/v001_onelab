@@ -2,7 +2,8 @@
 Чистая архитектура на практике
 
 ## Перед тем как запустить  `go mod download`  
-## Запустить проект -  ` make run(запускает docker container)`  
+## Запустить проект -  ` docker build -t app . 
+                        make run(запускает docker container)`  
 ## Остановить -  `make stop`
 
 ## Домашнее задание к уроку номер 2
