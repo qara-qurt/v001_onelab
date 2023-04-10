@@ -1,13 +1,12 @@
 ### GET users
 GET localhost:8080/api/users/
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODEwNDQ0NTksImlhdCI6MTY4MTAzNzI1OSwic3ViIjoiMTUifQ.wfv8QUCq5Cqf1IRqmTDQOKccEFQYLCDEcCOaQv5VH-I
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODExMjM5NzIsImlhdCI6MTY4MTExNjc3Miwic3ViIjoiMyJ9.3KiJkNDNoO7z6TBXe2EVY5k3j_8IkmXsK5K6MuAWe6s
 
 ### GET user by ID
 GET localhost:8080/api/users/2
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODEwNDQ0NTksImlhdCI6MTY4MTAzNzI1OSwic3ViIjoiMTUifQ.wfv8QUCq5Cqf1IRqmTDQOKccEFQYLCDEcCOaQv5VH-I
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODExMjM5NzIsImlhdCI6MTY4MTExNjc3Miwic3ViIjoiMyJ9.3KiJkNDNoO7z6TBXe2EVY5k3j_8IkmXsK5K6MuAWe6s
 
 ### SignUp
 POST localhost:8080/api/auth/sign-up
@@ -31,18 +30,16 @@ Content-Type: application/json
 
 ### Delete user by ID
 DELETE localhost:8080/api/users/2
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODEwNDQ0NTksImlhdCI6MTY4MTAzNzI1OSwic3ViIjoiMTUifQ.wfv8QUCq5Cqf1IRqmTDQOKccEFQYLCDEcCOaQv5VH-I
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODExMjM5NzIsImlhdCI6MTY4MTExNjc3Miwic3ViIjoiMyJ9.3KiJkNDNoO7z6TBXe2EVY5k3j_8IkmXsK5K6MuAWe6s
 
 ### Update user
-PATCH localhost:8080/api/users/3
+PATCH localhost:8080/api/users/2
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODEwNDQ0NTksImlhdCI6MTY4MTAzNzI1OSwic3ViIjoiMTUifQ.wfv8QUCq5Cqf1IRqmTDQOKccEFQYLCDEcCOaQv5VH-I
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODExMjM5NzIsImlhdCI6MTY4MTExNjc3Miwic3ViIjoiMyJ9.3KiJkNDNoO7z6TBXe2EVY5k3j_8IkmXsK5K6MuAWe6s
 
 {
   "fullName": "tima",
-  "login": "qara-qurt",
-  "password": "dias"
+  "login": "qara"
 }
 
 ### Change password
@@ -53,6 +50,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODEwNDQ0N
 
 {
   "login": "qara-qurt12",
-  "currentPassword": "dias",
-  "newPassword": "diass"
+  "currentPassword": "diasss",
+  "newPassword": "diassss"
 }

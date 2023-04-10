@@ -2,7 +2,6 @@ package http
 
 import (
 	"errors"
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strings"
@@ -36,7 +35,6 @@ func getTokenFromRequest(c echo.Context) (string, error) {
 	}
 
 	headerParts := strings.Split(header, " ")
-	fmt.Println(len(headerParts), headerParts[0])
 	if len(headerParts) != 2 || headerParts[0] != "Bearer" {
 		return "", errors.New("invalid auth header")
 	}
