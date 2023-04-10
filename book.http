@@ -11,12 +11,12 @@ Content-Type: application/json
 
 ### Get books
 GET localhost:8080/api/books/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODExMjA3MDEsImlhdCI6MTY4MTExMzUwMSwic3ViIjoiMyJ9.YkYViu0xwyYIfZKfLcWXhPh4kFsCw2chmm5iqk1sIZ4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODExMjM5NzIsImlhdCI6MTY4MTExNjc3Miwic3ViIjoiMyJ9.3KiJkNDNoO7z6TBXe2EVY5k3j_8IkmXsK5K6MuAWe6s
 Content-Type: application/json
 
 ### Get books
 GET localhost:8080/api/books/order-book
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODExMjA3MDEsImlhdCI6MTY4MTExMzUwMSwic3ViIjoiMyJ9.YkYViu0xwyYIfZKfLcWXhPh4kFsCw2chmm5iqk1sIZ4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODExMjM5NzIsImlhdCI6MTY4MTExNjc3Miwic3ViIjoiMyJ9.3KiJkNDNoO7z6TBXe2EVY5k3j_8IkmXsK5K6MuAWe6s
 Content-Type: application/json
 
 ### Get user books

@@ -25,7 +25,7 @@ func New() (*Config, error) {
 	}
 	pgURl, ok := os.LookupEnv("PgURL")
 	if !ok {
-		pgURl = "host=localhost port=5436 user=postgres password=secret dbname=postgres sslmode=disable"
+		pgURl = "host=posgres port=5432 user=postgres password=secret dbname=postgres sslmode=disable"
 	}
 	database, ok := os.LookupEnv("Database")
 	if !ok {
@@ -33,7 +33,7 @@ func New() (*Config, error) {
 	}
 	hmacSecret, ok := os.LookupEnv("HMACSecret")
 	if !ok {
-		hmacSecret = ""
+		hmacSecret = "secret"
 	}
 	return &Config{
 		PORT:       port,

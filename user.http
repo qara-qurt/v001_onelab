@@ -1,8 +1,7 @@
 ### GET users
 GET localhost:8080/api/users/
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODExMjM5NzIsImlhdCI6MTY4MTExNjc3Miwic3ViIjoiMyJ9.3KiJkNDNoO7z6TBXe2EVY5k3j_8IkmXsK5K6MuAWe6s
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODExMzIzMzAsImlhdCI6MTY4MTEyNTEzMCwic3ViIjoiMyJ9.QNXpiM3ww2Az--lI599GSzf31Ko4-YmtuoShq5Zyalo
 ### GET user by ID
 GET localhost:8080/api/users/2
 Accept: application/json

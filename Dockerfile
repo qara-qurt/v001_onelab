@@ -12,6 +12,7 @@ WORKDIR /app
 COPY --from=builder /app/app .
 COPY --from=builder /app/configs /app/configs
 COPY --from=builder /usr/local/go/lib/time/zoneinfo.zip /
+COPY .env .
 ENV TZ=Asia/Almaty
 ENV ZONEINFO=/zoneinfo.zip
 CMD ["./app"]
