@@ -32,18 +32,18 @@ import (
 // @in header
 // @name Authorization
 func main() {
-	run()
+	log.Fatal(run())
 }
 
-func run() {
+func run() error {
 	config, err := configs.New()
 	if err != nil {
-		log.Fatal(err.Error())
+		return err
 	}
 
 	db, err := postgres.NewDatabasePSQL(config)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	repo := repository.New(db)
@@ -59,7 +59,7 @@ func run() {
 	}()
 
 	gracefulShutdown(srv)
-
+	return nil
 }
 
 func gracefulShutdown(srv *echo.Echo) {

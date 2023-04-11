@@ -60,25 +60,3 @@ func (h *Handler) GetBooks(c echo.Context) error {
 
 	return c.JSON(http.StatusCreated, books)
 }
-
-// GetOrderBooks @Summary GetOrderBooks
-// @Tags books
-// @Security ApiKeyAuth
-// @Description get order history books
-// @ID get_order-books
-// @Accept json
-// @Produce json
-// @Success 200 {object} []model.OrderBook
-// @Failure 500 {object} model.ErrorResponse
-// @Failure 400 {object} model.ErrorResponse
-// @Router /books/order-book [get]
-func (h *Handler) GetOrderBooks(c echo.Context) error {
-	books, err := h.BookService.GetOrderBooks()
-	if err != nil {
-		c.Logger().Error(err)
-		return c.JSON(http.StatusInternalServerError, model.NewErrorResponse(err.Error()))
-	}
-
-	return c.JSON(http.StatusCreated, books)
-
-}

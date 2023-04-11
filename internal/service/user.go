@@ -22,8 +22,6 @@ type IUser interface {
 	Delete(id int) error
 	Update(user model.UserResponse) error
 	ChangePassword(user model.ChangePassword) error
-	GetOrderUserBooks() ([]model.UserOrderBooksResponse, error)
-	GetOrderUserBooksLastMounth() ([]model.UserOrderBooksResponse, error)
 }
 
 type User struct {
@@ -134,26 +132,6 @@ func (u User) ChangePassword(user model.ChangePassword) error {
 	return u.repo.ChangePassword(user)
 }
 
-func (u User) GetOrderUserBooks() ([]model.UserOrderBooksResponse, error) {
-	userBooks, err := u.repo.GetOrderUserBooks(false)
-	if err != nil {
-		return []model.UserOrderBooksResponse{}, err
-	}
-
-	res := combineBooks(userBooks, false)
-	return res, nil
-}
-
-func (u User) GetOrderUserBooksLastMounth() ([]model.UserOrderBooksResponse, error) {
-	userBooks, err := u.repo.GetOrderUserBooks(true)
-	if err != nil {
-		return []model.UserOrderBooksResponse{}, err
-	}
-
-	res := combineBooks(userBooks, true)
-	return res, nil
-}
-
 func hashPassword(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
@@ -165,39 +143,4 @@ func hashPassword(password string) (string, error) {
 func checkPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
-}
-
-// withReturned(bool) - с возвращенными книгами
-func combineBooks(userBooks []model.UserOrderBooks, withReturned bool) []model.UserOrderBooksResponse {
-	data := make(map[uint]*model.UserOrderBooksResponse)
-	for _, ub := range userBooks {
-		if _, ok := data[ub.ID]; !ok {
-			data[ub.ID] = &model.UserOrderBooksResponse{
-				ID:       ub.ID,
-				Login:    ub.Login,
-				FullName: ub.FullName,
-				Book:     []model.BookWithDate{},
-			}
-		}
-		book := model.BookWithDate{
-			ID:          ub.Book.ID,
-			Name:        ub.Book.Name,
-			Description: ub.Book.Description,
-			Author:      ub.Book.Author,
-			OrderDate:   ub.Book.OrderDate,
-			ReturnDate:  ub.Book.ReturnDate,
-		}
-
-		if withReturned {
-			data[ub.ID].AddBook(book)
-		} else if !ub.Book.ReturnDate.Valid {
-			data[ub.ID].AddBook(book)
-		}
-	}
-
-	result := make([]model.UserOrderBooksResponse, 0, len(data))
-	for _, user := range data {
-		result = append(result, *user)
-	}
-	return result
 }

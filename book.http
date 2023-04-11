@@ -26,5 +26,5 @@ Content-Type: application/json
 
 ### Get last mounth user books
 GET localhost:8080/api/users/books/last-mounth
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODExMjA3MDEsImlhdCI6MTY4MTExMzUwMSwic3ViIjoiMyJ9.YkYViu0xwyYIfZKfLcWXhPh4kFsCw2chmm5iqk1sIZ4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODEyMjcxNTksImlhdCI6MTY4MTIxOTk1OSwic3ViIjoiNCJ9.ExaGgS7NJ1w6pXa6USqD2WoFZ5yGjsbwshYdCY-ocsk
 Content-Type: application/json

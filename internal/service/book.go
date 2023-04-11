@@ -8,7 +8,6 @@ import (
 type IBook interface {
 	Create(book model.BookInput) error
 	GetAll() ([]model.Book, error)
-	GetOrderBooks() ([]model.OrderBook, error)
 }
 
 type Book struct {
@@ -27,8 +26,4 @@ func (b Book) Create(book model.BookInput) error {
 
 func (b Book) GetAll() ([]model.Book, error) {
 	return b.repo.GetAll()
-}
-
-func (b Book) GetOrderBooks() ([]model.OrderBook, error) {
-	return b.repo.GetOrderBooks()
 }
