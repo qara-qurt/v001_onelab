@@ -459,7 +459,7 @@ paths:
       - ApiKeyAuth: []
       tags:
       - user-books
-  /users/change-password/:
+  /users/change-password:
     patch:
       consumes:
       - application/json

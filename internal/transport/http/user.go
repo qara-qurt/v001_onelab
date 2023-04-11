@@ -214,7 +214,7 @@ func (h Handler) UpdateUser(c echo.Context) error {
 // @Success 200
 // @Failure 500 {object} model.ErrorResponse
 // @Failure 400 {object} model.ErrorResponse
-// @Router /users/change-password/ [patch]
+// @Router /users/change-password [patch]
 func (h Handler) ChangePassword(c echo.Context) error {
 	var user model.ChangePassword
 	if err := c.Bind(&user); err != nil {

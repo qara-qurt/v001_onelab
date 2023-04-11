@@ -342,7 +342,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/change-password/": {
+        "/users/change-password": {
             "patch": {
                 "security": [
                     {
