@@ -105,6 +105,18 @@ definitions:
       token:
         type: string
     type: object
+  v001_onelab_internal_model.UpdateUser:
+    properties:
+      fullName:
+        minLength: 2
+        type: string
+      login:
+        minLength: 4
+        type: string
+    required:
+    - fullName
+    - login
+    type: object
   v001_onelab_internal_model.User:
     properties:
       fullname:
@@ -330,6 +342,35 @@ paths:
       - ApiKeyAuth: []
       tags:
       - users
+    patch:
+      consumes:
+      - application/json
+      description: update user
+      operationId: update-user
+      parameters:
+      - description: User info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/v001_onelab_internal_model.UpdateUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - users
   /users/{id}:
     delete:
       consumes:
@@ -377,34 +418,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/v001_onelab_internal_model.UserResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/v001_onelab_internal_model.ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      tags:
-      - users
-    patch:
-      consumes:
-      - application/json
-      description: update user
-      operationId: update-user
-      parameters:
-      - description: Account ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
         "400":
           description: Bad Request
           schema:

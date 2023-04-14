@@ -48,9 +48,12 @@ func (u UserResponse) Validate() error {
 }
 
 type UpdateUser struct {
-	FullName string `json:"fullName" `
-	Login    string `json:"login"`
-	Password string `json:"password"`
+	FullName string `json:"fullName" validate:"required,gte=2"`
+	Login    string `json:"login" validate:"required,gte=4"`
+}
+
+func (u UpdateUser) Validate() error {
+	return validate.Struct(u)
 }
 
 type ChangePassword struct {

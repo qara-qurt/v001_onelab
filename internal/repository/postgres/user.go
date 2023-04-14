@@ -1,4 +1,4 @@
-package repository
+package postgres
 
 import (
 	"database/sql"
@@ -6,16 +6,6 @@ import (
 	"github.com/lib/pq"
 	"v001_onelab/internal/model"
 )
-
-type IUserRepository interface {
-	Create(user model.UserInput) error
-	GetByID(id int) (model.UserResponse, error)
-	GetByLogin(login string) (model.User, error)
-	GetAll() ([]model.UserResponse, error)
-	Delete(id int) error
-	Update(user model.UserResponse) error
-	ChangePassword(user model.ChangePassword) error
-}
 
 type User struct {
 	db *sqlx.DB

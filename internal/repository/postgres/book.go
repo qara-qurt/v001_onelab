@@ -1,14 +1,9 @@
-package repository
+package postgres
 
 import (
 	"github.com/jmoiron/sqlx"
 	"v001_onelab/internal/model"
 )
-
-type IBookRepository interface {
-	Create(book model.BookInput) error
-	GetAll() ([]model.Book, error)
-}
 
 type Book struct {
 	db *sqlx.DB

@@ -5,11 +5,6 @@ import (
 	"v001_onelab/internal/repository"
 )
 
-type IBook interface {
-	Create(book model.BookInput) error
-	GetAll() ([]model.Book, error)
-}
-
 type Book struct {
 	repo repository.IBookRepository
 }
