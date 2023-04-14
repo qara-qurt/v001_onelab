@@ -21,7 +21,7 @@ import (
 // @Failure 500 {object} model.ErrorResponse
 // @Router /users/ [get]
 func (h *Handler) GetUsers(c echo.Context) error {
-	res, err := h.UserService.GetAll()
+	res, err := h.service.User.GetAll()
 
 	if err != nil {
 		c.Logger().Error(err)
@@ -52,7 +52,7 @@ func (h *Handler) GetUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, model.NewErrorResponse("invalid user ID"))
 	}
 
-	res, err := h.UserService.GetByID(id)
+	res, err := h.service.User.GetByID(id)
 	if err != nil {
 		c.Logger().Error(err)
 		status := http.StatusInternalServerError
@@ -90,7 +90,7 @@ func (h *Handler) SignUp(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, model.NewErrorResponse(err.Error()))
 	}
 
-	err := h.UserService.Create(user)
+	err := h.service.User.Create(user)
 	if err != nil {
 		c.Logger().Error(err)
 		status := http.StatusInternalServerError
@@ -125,7 +125,7 @@ func (h *Handler) SignIn(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, model.NewErrorResponse(err.Error()))
 	}
 
-	token, err := h.UserService.SignIn(user)
+	token, err := h.service.User.SignIn(user)
 	if err != nil {
 		c.Logger().Error(err)
 		return c.JSON(http.StatusInternalServerError, model.NewErrorResponse(err.Error()))
@@ -156,7 +156,7 @@ func (h *Handler) DeleteUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, model.NewErrorResponse("invalid user ID"))
 	}
 
-	if err := h.UserService.Delete(id); err != nil {
+	if err := h.service.User.Delete(id); err != nil {
 		c.Logger().Error(err)
 		return c.JSON(http.StatusBadRequest, model.NewErrorResponse(err.Error()))
 	}
@@ -196,7 +196,7 @@ func (h Handler) UpdateUser(c echo.Context) error {
 		Login:    res.Login,
 	}
 
-	err := h.UserService.Update(user)
+	err := h.service.User.Update(user)
 	if err != nil {
 		c.Logger().Error(err)
 		return c.JSON(http.StatusNotFound, model.NewErrorResponse(err.Error()))
@@ -228,7 +228,7 @@ func (h Handler) ChangePassword(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, model.NewErrorResponse(err.Error()))
 	}
 
-	if err := h.UserService.ChangePassword(user); err != nil {
+	if err := h.service.User.ChangePassword(user); err != nil {
 		status := http.StatusInternalServerError
 		if errors.Is(err, model.ErrorPassword) {
 			status = http.StatusBadRequest
