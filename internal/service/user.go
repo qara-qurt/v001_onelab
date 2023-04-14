@@ -12,18 +12,6 @@ import (
 	"v001_onelab/internal/repository"
 )
 
-type IUser interface {
-	Create(user model.UserInput) error
-	SignIn(user model.SignInInput) (string, error)
-	ParseToken(ctx context.Context, token string) (uint, error)
-	GetByID(id int) (model.UserResponse, error)
-	GetByLogin(login string) (model.User, error)
-	GetAll() ([]model.UserResponse, error)
-	Delete(id int) error
-	Update(user model.UserResponse) error
-	ChangePassword(user model.ChangePassword) error
-}
-
 type User struct {
 	repo       repository.IUserRepository
 	hmacSecret []byte

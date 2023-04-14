@@ -1,14 +1,9 @@
-package repository
+package postgres
 
 import (
 	"github.com/jmoiron/sqlx"
 	"v001_onelab/internal/model"
 )
-
-type IOrderBookRepository interface {
-	GetOrderBooks() ([]model.OrderBook, error)
-	GetOrderUserBooks(isLastMounth bool) ([]model.UserOrderBooks, error)
-}
 
 type OrderBook struct {
 	db *sqlx.DB

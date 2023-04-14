@@ -171,31 +171,32 @@ func (h *Handler) DeleteUser(c echo.Context) error {
 // @ID update-user
 // @Accept json
 // @Produce json
-// @Param  id path int  true "Account ID"
+// @Param  input body model.UpdateUser  true "User info"
 // @Success 200
 // @Failure 500 {object} model.ErrorResponse
 // @Failure 400 {object} model.ErrorResponse
-// @Router /users/{id} [patch]
+// @Router /users/ [patch]
 func (h Handler) UpdateUser(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.Logger().Error(err)
-		return c.JSON(http.StatusBadRequest, model.NewErrorResponse("invalid user ID"))
-	}
+	id := c.Get("id")
 
-	var user model.UserResponse
-	if err := c.Bind(&user); err != nil {
+	var res model.UpdateUser
+	if err := c.Bind(&res); err != nil {
 		c.Logger().Error(err)
 		return c.JSON(http.StatusInternalServerError, model.NewErrorResponse(err.Error()))
 	}
 
-	if err := user.Validate(); err != nil {
+	if err := res.Validate(); err != nil {
 		c.Logger().Error(err)
 		return c.JSON(http.StatusInternalServerError, model.NewErrorResponse(err.Error()))
 	}
 
-	user.ID = uint(id)
-	err = h.UserService.Update(user)
+	user := model.UserResponse{
+		ID:       id.(uint),
+		FullName: res.FullName,
+		Login:    res.Login,
+	}
+
+	err := h.UserService.Update(user)
 	if err != nil {
 		c.Logger().Error(err)
 		return c.JSON(http.StatusNotFound, model.NewErrorResponse(err.Error()))

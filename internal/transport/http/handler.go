@@ -45,7 +45,7 @@ func (h Handler) InitRouter() *echo.Echo {
 		users.GET("/", h.GetUsers)
 		users.GET("/:id", h.GetUser)
 		users.PATCH("/change-password", h.ChangePassword)
-		users.PATCH("/:id", h.UpdateUser)
+		users.PATCH("/", h.UpdateUser)
 		users.DELETE("/:id", h.DeleteUser)
 
 		userBooks := users.Group("/books")

@@ -10,12 +10,10 @@ import (
 	"syscall"
 	"time"
 	"v001_onelab/configs"
+	_ "v001_onelab/docs"
 	"v001_onelab/internal/repository"
 	"v001_onelab/internal/service"
 	rest "v001_onelab/internal/transport/http"
-	"v001_onelab/pkg/database/postgres"
-
-	_ "v001_onelab/docs"
 )
 
 // @title Library
@@ -41,12 +39,10 @@ func run() error {
 		return err
 	}
 
-	db, err := postgres.NewDatabasePSQL(config)
+	repo, err := repository.New(config)
 	if err != nil {
 		return err
 	}
-
-	repo := repository.New(db)
 	service := service.New(repo, config)
 	handler := rest.New(service)
 

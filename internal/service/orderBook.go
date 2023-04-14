@@ -5,12 +5,6 @@ import (
 	"v001_onelab/internal/repository"
 )
 
-type IOrderBook interface {
-	GetOrderBooks() ([]model.OrderBook, error)
-	GetOrderUserBooks() ([]model.UserOrderBooksResponse, error)
-	GetOrderUserBooksLastMounth() ([]model.UserOrderBooksResponse, error)
-}
-
 type OrderBook struct {
 	repo repository.IOrderBookRepository
 }
