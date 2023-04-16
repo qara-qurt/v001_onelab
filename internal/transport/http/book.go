@@ -31,7 +31,7 @@ func (h *Handler) CreateBook(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, model.NewErrorResponse(err.Error()))
 	}
 
-	if err := h.BookService.Create(book); err != nil {
+	if err := h.service.Book.Create(book); err != nil {
 		c.Logger().Error(err)
 		return c.JSON(http.StatusInternalServerError, model.NewErrorResponse(err.Error()))
 	}
@@ -52,7 +52,7 @@ func (h *Handler) CreateBook(c echo.Context) error {
 // @Failure 400 {object} model.ErrorResponse
 // @Router /books/ [get]
 func (h *Handler) GetBooks(c echo.Context) error {
-	books, err := h.BookService.GetAll()
+	books, err := h.service.Book.GetAll()
 	if err != nil {
 		c.Logger().Error(err)
 		return c.JSON(http.StatusInternalServerError, model.NewErrorResponse(err.Error()))

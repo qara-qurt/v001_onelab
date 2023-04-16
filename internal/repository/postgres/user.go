@@ -17,20 +17,17 @@ func NewUser(db *sqlx.DB) *User {
 	}
 }
 
-func (u *User) Create(user model.UserInput) error {
-	query, err := u.db.Preparex("INSERT INTO users(fullName,login, password) VALUES ($1, $2, $3)")
+func (u *User) Create(user model.UserInput) (int, error) {
+	var userID int
+	query := `INSERT INTO users (fullName, login, password) VALUES ($1, $2, $3) RETURNING id`
+	err := u.db.QueryRowx(query, user.FullName, user.Login, user.Password).Scan(&userID)
 	if err != nil {
-		return err
-	}
-	defer query.Close()
-
-	if _, err := query.Exec(user.FullName, user.Login, user.Password); err != nil {
 		if err.(*pq.Error).Constraint == "users_login_key" {
-			return model.ErrorAlreadyExist
+			return 0, model.ErrorAlreadyExist
 		}
-		return err
+		return 0, err
 	}
-	return nil
+	return userID, nil
 }
 
 func (u User) GetByID(id int) (model.UserResponse, error) {

@@ -6,6 +6,8 @@ import (
 	"v001_onelab/internal/repository/postgres"
 )
 
+//go:generate mockgen -source=repository.go -destination=mocks/mock.go
+
 type IOrderBookRepository interface {
 	GetOrderBooks() ([]model.OrderBook, error)
 	GetOrderUserBooks(isLastMounth bool) ([]model.UserOrderBooks, error)
@@ -17,7 +19,7 @@ type IBookRepository interface {
 }
 
 type IUserRepository interface {
-	Create(user model.UserInput) error
+	Create(user model.UserInput) (int, error)
 	GetByID(id int) (model.UserResponse, error)
 	GetByLogin(login string) (model.User, error)
 	GetAll() ([]model.UserResponse, error)
@@ -33,7 +35,6 @@ type Repository struct {
 }
 
 func New(config *configs.Config) (*Repository, error) {
-
 	db, err := postgres.NewDatabasePSQL(config)
 	if err != nil {
 		return nil, err

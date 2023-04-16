@@ -19,7 +19,7 @@ import (
 // @Failure 400 {object} model.ErrorResponse
 // @Router /books/order-book [get]
 func (h *Handler) GetOrderBooks(c echo.Context) error {
-	books, err := h.OrderBookService.GetOrderBooks()
+	books, err := h.service.OrderBook.GetOrderBooks()
 	if err != nil {
 		c.Logger().Error(err)
 		return c.JSON(http.StatusInternalServerError, model.NewErrorResponse(err.Error()))
@@ -40,7 +40,7 @@ func (h *Handler) GetOrderBooks(c echo.Context) error {
 // @Failure 500 {object} model.ErrorResponse
 // @Router /users/books/current [get]
 func (h Handler) GetOrderUserBooks(c echo.Context) error {
-	userBooks, err := h.OrderBookService.GetOrderUserBooks()
+	userBooks, err := h.service.OrderBook.GetOrderUserBooks()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, model.NewErrorResponse(err.Error()))
 	}
@@ -59,7 +59,7 @@ func (h Handler) GetOrderUserBooks(c echo.Context) error {
 // @Failure 500 {object} model.ErrorResponse
 // @Router /users/books/last-mounth [get]
 func (h Handler) GetOrderUserBooksLastMounth(c echo.Context) error {
-	userBooks, err := h.OrderBookService.GetOrderUserBooksLastMounth()
+	userBooks, err := h.service.OrderBook.GetOrderUserBooksLastMounth()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, model.NewErrorResponse(err.Error()))
 	}

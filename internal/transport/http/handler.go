@@ -10,18 +10,14 @@ import (
 )
 
 type Handler struct {
-	router           *echo.Echo
-	UserService      service.IUser
-	BookService      service.IBook
-	OrderBookService service.IOrderBook
+	router  *echo.Echo
+	service *service.Service
 }
 
 func New(service *service.Service) *Handler {
 	return &Handler{
-		router:           echo.New(),
-		UserService:      service.User,
-		BookService:      service.Book,
-		OrderBookService: service.OrderBook,
+		router:  echo.New(),
+		service: service,
 	}
 }
 

@@ -7,6 +7,8 @@ import (
 	"v001_onelab/internal/repository"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
 type IOrderBook interface {
 	GetOrderBooks() ([]model.OrderBook, error)
 	GetOrderUserBooks() ([]model.UserOrderBooksResponse, error)
@@ -19,7 +21,7 @@ type IBook interface {
 }
 
 type IUser interface {
-	Create(user model.UserInput) error
+	Create(user model.UserInput) (int, error)
 	SignIn(user model.SignInInput) (string, error)
 	ParseToken(ctx context.Context, token string) (uint, error)
 	GetByID(id int) (model.UserResponse, error)

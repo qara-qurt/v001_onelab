@@ -16,7 +16,7 @@ func (h Handler) authMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			})
 		}
 
-		userId, err := h.UserService.ParseToken(c.Request().Context(), token)
+		userId, err := h.service.User.ParseToken(c.Request().Context(), token)
 		if err != nil {
 			return c.JSON(http.StatusUnauthorized, map[string]string{
 				"error": err.Error(),
