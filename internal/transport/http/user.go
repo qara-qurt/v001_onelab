@@ -74,7 +74,7 @@ func (h *Handler) GetUser(c echo.Context) error {
 // @Accept json
 // @Produce json
 // @Param  input body model.UserInput  true "User info"
-// @Success 201
+// @Success 201 {object} map[string]int{"id":int}
 // @Failure 500 {object} model.ErrorResponse
 // @Failure 400 {object} model.ErrorResponse
 // @Router /auth/sign-up [post]
@@ -90,7 +90,7 @@ func (h *Handler) SignUp(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, model.NewErrorResponse(err.Error()))
 	}
 
-	err := h.service.User.Create(user)
+	id, err := h.service.User.Create(user)
 	if err != nil {
 		c.Logger().Error(err)
 		status := http.StatusInternalServerError
@@ -99,7 +99,9 @@ func (h *Handler) SignUp(c echo.Context) error {
 		}
 		return c.JSON(status, model.NewErrorResponse(err.Error()))
 	}
-	return c.NoContent(http.StatusCreated)
+	return c.JSON(http.StatusCreated, map[string]int{
+		"id": id,
+	})
 }
 
 // SignIn @Summary SignIn

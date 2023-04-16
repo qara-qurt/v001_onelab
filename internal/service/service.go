@@ -21,7 +21,7 @@ type IBook interface {
 }
 
 type IUser interface {
-	Create(user model.UserInput) error
+	Create(user model.UserInput) (int, error)
 	SignIn(user model.SignInInput) (string, error)
 	ParseToken(ctx context.Context, token string) (uint, error)
 	GetByID(id int) (model.UserResponse, error)

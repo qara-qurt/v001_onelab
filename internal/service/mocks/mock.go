@@ -170,11 +170,12 @@ func (mr *MockIUserMockRecorder) ChangePassword(user interface{}) *gomock.Call {
 }
 
 // Create mocks base method.
-func (m *MockIUser) Create(user model.UserInput) error {
+func (m *MockIUser) Create(user model.UserInput) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", user)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Create indicates an expected call of Create.

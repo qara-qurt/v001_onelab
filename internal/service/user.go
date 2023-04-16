@@ -24,10 +24,10 @@ func NewUser(repo repository.IUserRepository, secret string) *User {
 	}
 }
 
-func (u User) Create(user model.UserInput) error {
+func (u User) Create(user model.UserInput) (int, error) {
 	hashPass, err := hashPassword(user.Password)
 	if err != nil {
-		return err
+		return 0, err
 	}
 	user.Password = hashPass
 	return u.repo.Create(user)
